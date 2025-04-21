@@ -36,7 +36,7 @@ dependencies = [
     "ldap3~=2.9.1",
     "minio==7.2.15",
     "multidict==6.1.0",
-    "nats-py==2.8.0",
+    "nats-py==2.10.0",
     "oauthlib==3.2.2",
     "passlib==1.7.4",
     "propcache==0.2.1",
