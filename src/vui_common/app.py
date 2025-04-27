@@ -18,7 +18,7 @@ from vui_common.configs.config_proxy import config_app
 load_dotenv(override=True)
 
 def create_base_app(
-    component: Literal['vui-common', 'agent', 'control-plane'] = 'vui-common',
+    component: Literal['vui-common', 'agent', 'core'] = 'vui-common',
     root_path: str = '/api',
     docs_url: str = '/docs',
     re_docs_url: str = '/redoc',

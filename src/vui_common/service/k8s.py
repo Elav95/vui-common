@@ -26,8 +26,8 @@ async def _get_node_list(only_problem=False):
             node_details['name'] = node.metadata.name
             if 'kubernetes.io/role' in node.metadata.labels:
                 node_details['role'] = node.metadata.labels['kubernetes.io/role']
+                node_details['role'] = 'core'
 
-                node_details['role'] = 'control-plane'
             version = node.status.node_info.kube_proxy_version
             node_details['version'] = version
 
