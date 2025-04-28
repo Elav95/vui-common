@@ -61,8 +61,7 @@ class BaseWebSocketManager:
                 # if auth is disabled
                 if not config_app.app.auth_enabled:
                     user = UserSession(username="guest", is_guest=True)
-
-                if data.type == "authentication" and data.kind == "request":
+                elif data.type == "authentication" and data.kind == "request":
                     # Treats the message as a JWT token
                     user = await get_user_entity_from_token(data.payload.get("token"))
 
