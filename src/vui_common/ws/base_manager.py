@@ -4,6 +4,7 @@ from fastapi import WebSocket, WebSocketDisconnect
 from typing import Dict
 import asyncio
 import json
+import uuid
 
 from vui_common.configs.config_proxy import config_app
 from vui_common.logger.logger_proxy import logger
@@ -59,7 +60,7 @@ class BaseWebSocketManager:
 
                 # if auth is disabled
                 if not config_app.app.auth_enabled:
-                    user = UserSession(username="guest", uid=-1)
+                    user = UserSession(username="guest", is_guest=True)
 
                 if data.type == "authentication" and data.kind == "request":
                     # Treats the message as a JWT token
