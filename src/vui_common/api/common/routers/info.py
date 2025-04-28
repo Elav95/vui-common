@@ -14,6 +14,7 @@ from vui_common.app_data import (__version__,
                                  __admin_email__,
                                  __helm_version__,
                                  __helm_app_version__,
+                                 __helm_core__,
                                  __helm_api__,
                                  __helm_ui__,
                                  __helm_watchdog__)
