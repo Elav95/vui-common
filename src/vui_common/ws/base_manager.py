@@ -5,11 +5,12 @@ from typing import Dict
 import asyncio
 import json
 
+from vui_common.configs.config_proxy import config_app
 from vui_common.logger.logger_proxy import logger
+from vui_common.models.user_session import UserSession
 from vui_common.security.authentication.tokens import get_user_entity_from_token
 from vui_common.ws.ws_message import WebSocketMessage, build_message
 
-from vui_common.configs.config_proxy import config_app
 
 class BaseWebSocketManager:
     def __init__(self):
@@ -28,10 +29,6 @@ class BaseWebSocketManager:
                     data = json.loads(message) if message.startswith('{') else message
                     if not isinstance(data, dict):
                         logger.error(f"Websocket message is not a dict: {message}")
-                        continue
-
-                    # if auth is disabled
-                    if not config_app.app.auth_enabled:
                         continue
 
                     data = WebSocketMessage(**data)
@@ -59,6 +56,10 @@ class BaseWebSocketManager:
                     # Responds to ping to keep the connection open
                     await self.__send_pong(websocket, data)
                     continue  # Continue to receive messages without closing the connection
+
+                # if auth is disabled
+                if not config_app.app.auth_enabled:
+                    user = UserSession(username="guest", uid=-1)
 
                 if data.type == "authentication" and data.kind == "request":
                     # Treats the message as a JWT token
