@@ -62,6 +62,7 @@ async def get_app_info():
            'admin_email': __admin_email__,
            'helm_version': f'{__helm_version__}',
            'helm_app_version': f'{__helm_app_version__}',
+           'helm_core': f'{__helm_core__}',
            'helm_api': f'{__helm_api__}',
            'helm_ui': f'{__helm_ui__}',
            'helm_watchdog': f'{__helm_watchdog__}',
