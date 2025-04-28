@@ -9,6 +9,7 @@ from vui_common.logger.logger_proxy import logger
 from vui_common.security.authentication.tokens import get_user_entity_from_token
 from vui_common.ws.ws_message import WebSocketMessage, build_message
 
+from vui_common.configs.config_proxy import config_app
 
 class BaseWebSocketManager:
     def __init__(self):
@@ -27,6 +28,10 @@ class BaseWebSocketManager:
                     data = json.loads(message) if message.startswith('{') else message
                     if not isinstance(data, dict):
                         logger.error(f"Websocket message is not a dict: {message}")
+                        continue
+
+                    # if auth is disabled
+                    if not config_app.app.auth_enabled:
                         continue
 
                     data = WebSocketMessage(**data)
