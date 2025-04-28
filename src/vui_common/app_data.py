@@ -12,3 +12,4 @@ __helm_app_version__ = config_app.helm.app_version
 __helm_api__ = config_app.helm.api
 __helm_ui__ = config_app.helm.ui
 __helm_watchdog__ = config_app.helm.watchdog
+__helm_core__ = config_app.helm.core
