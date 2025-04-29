@@ -138,7 +138,8 @@ class BaseWebSocketManager:
 
     async def send_personal_message(self, user_id, message: str):
         try:
-            await self.active_connections[str(user_id)].send_text(message)
+            if user_id is not None:
+                await self.active_connections[str(user_id)].send_text(message)
         except KeyError:
             logger.warning(f"User ID {user_id} not found in active connections.")
         except AttributeError:
