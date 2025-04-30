@@ -25,7 +25,7 @@ token_expires_days = config_app.security.refresh_token_expiration
 
 # enable_users = config.get_security_manage_users()
 
-tag_name = 'User'
+tag_name = 'Common User'
 endpoint_limiter = LimiterRequests(tags=tag_name,
                                    default_key='L1')
 

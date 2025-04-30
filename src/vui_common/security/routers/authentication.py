@@ -12,7 +12,7 @@ from vui_common.utils.swagger import route_description
 
 router = APIRouter()
 
-tag_name = 'Security'
+tag_name = 'Common Security'
 endpoint_limiter = LimiterRequests(tags=tag_name,
                                    default_key='L1')
 
