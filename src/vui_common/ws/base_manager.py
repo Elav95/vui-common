@@ -136,12 +136,12 @@ class BaseWebSocketManager:
         self.active_connections[user_id].close(1001)
         del self.active_connections[user_id]
 
-    async def send_personal_message(self, user_id, message: str):
+    async def send_personal_message(self, user_id: str, message: str):
         try:
-            if str(user_id) is not None:
-                await self.active_connections[str(user_id)].send_text(message)
+            if user_id != 'None':
+                await self.active_connections[user_id].send_text(message)
         except KeyError:
-            logger.warning(f"User ID {user_id} [{type(user_id)}] not found in active connections.")
+            logger.warning(f"User ID {user_id} not found in active connections.")
         except AttributeError:
             logger.error(f"Connection object for user ID {user_id} does not support send_text method.")
         except Exception as e:
