@@ -9,7 +9,7 @@ class ApplicationConfig:
         self.uvicorn_reload = os.getenv('UVICORN_RELOAD', 'False').lower() == 'true'
         self.auth_enabled = os.getenv('AUTH_ENABLED', 'True').lower() == 'true'
         self.auth_type = os.getenv('AUTH_TYPE', 'BUILT-IN')
-        self.swagger_documentation_disabled = os.getenv('API_ENABLE_DOCUMENTATION', '0') == '1'
+        self.swagger_documentation_disabled = os.getenv('API_ENABLE_DOCUMENTATION', 'False').lower() == 'true'
         # self.container_mode = os.getenv('CONTAINER_MODE', 'False').lower() == 'true'
         self.scrapy_version = int(os.getenv('SCRAPY_VERSION_MIN', '30'))
         self.inspect_folder = os.getenv('DOWNLOAD_INSPECT_FOLDER', '/tmp/velero-inspect-backups')

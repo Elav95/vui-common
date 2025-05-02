@@ -229,7 +229,7 @@ class ConfigHelper:
                    'K8S_IN_CLUSTER_MODE': {'type': bool, 'is_mandatory': False},
                    'K8S_VELERO_NAMESPACE': {'type': str, 'is_mandatory': False},
                    'API_ENDPOINT_PORT': {'type': int, 'is_mandatory': True},
-                   'API_ENABLE_DOCUMENTATION': {'type': int, 'is_mandatory': True},
+                   'API_ENABLE_DOCUMENTATION': {'type': bool, 'is_mandatory': True},
                    'API_TOKEN_EXPIRATION_MIN': {'type': int, 'is_mandatory': True},
                    'API_TOKEN_REFRESH_EXPIRATION_DAYS': {'type': int, 'is_mandatory': True},
                    'SECURITY_DISABLE_USERS_PWD_RATE': {'type': bool, 'is_mandatory': False},
