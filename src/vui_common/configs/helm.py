@@ -3,9 +3,10 @@ import os
 
 class HelmConfig:
     def __init__(self):
-        self.version = os.getenv('HELM_VERSION', '-')
-        self.app_version = os.getenv('HELM_APP_VERSION', '-')
-        self.core = os.getenv('HELM_CORE', '-')
-        self.api = os.getenv('HELM_API', '-')
-        self.ui = os.getenv('HELM_UI', '-')
-        self.watchdog = os.getenv('HELM_WATCHDOG', '-')
+        self.version = os.getenv('HELM_VERSION', '')
+        self.app_version = os.getenv('HELM_APP_VERSION', '')
+        self.core = os.getenv('HELM_CORE', '')
+        self.api = os.getenv('HELM_API', '')
+        self.ui = os.getenv('HELM_UI', '')
+        self.watchdog = os.getenv('HELM_WATCHDOG', '')
+        self.release_name = os.getenv('HELM_RELEASE_NAME', '')
