@@ -3,7 +3,7 @@ import os
 class WatchdogConfig:
     def __init__(self):
         self.url = self._get_watchdog_url()
-        self.report_cronjob_name = os.getenv('WATCHDOG_REPORT_CRONJOB_NAME', 'vui-report')
+        self.report_cronjob_name = os.getenv('WATCHDOG_REPORT_CRONJOB_NAME', f"{os.getenv('HELM_RELEASE_NAME')}-report-cronjob")
 
     @staticmethod
     def _get_watchdog_url():
