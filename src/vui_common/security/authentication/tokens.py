@@ -1,4 +1,5 @@
 import uuid
+import re
 
 from fastapi import Depends, HTTPException
 from jose import jwt, JWTError
@@ -157,6 +158,21 @@ def create_token(username, userid, auth_type='BUILT-IN', db: Session = None, onl
                 "token_type": "bearer",
                 "expires_in": str(access_token_expires.seconds)}
 
+#
+# print token
+#
+def format_token_log(key_name: str, value: str) -> str:
+    if not value:
+        return f"{key_name}=<empty>"
+
+    if len(value) >= 10:
+        preview = value[:3] + "..." + value[-3:]
+    elif len(value) > 5:
+        preview = value[:3] + "..." + value[3:]
+    else:
+        preview = value
+
+    return f"{key_name}={preview}"
 
 #
 # uncomment to enable session with cookies (no 2/3)
@@ -164,6 +180,7 @@ def create_token(username, userid, auth_type='BUILT-IN', db: Session = None, onl
 # async def get_user_entity_from_token(token = None , request: Request = None) -> UserSession:
 #     token = token or request.cookies.get("auth_token")  # ⬅️ Read from cookie
 async def get_user_entity_from_token(token: str = Depends(oauth2_scheme)) -> UserSession:
+    logger.debug(format_token_log('TOKEN', token))
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail='Could not validate credentials',
@@ -171,8 +188,15 @@ async def get_user_entity_from_token(token: str = Depends(oauth2_scheme)) -> Use
     )
     payload = None
     try:
-        # LS 2024.12.12 reload from env
-        # payload = jwt.decode(token, secret_access_key, algorithms=[algorithm])
+        logger.debug(format_token_log('SECURITY_TOKEN_KEY', config_app.security.token_key))
+        if (
+                not config_app.security.token_key
+                or config_app.security.token_key.strip() == ""
+                or len(config_app.security.token_key) != 64
+                or not re.fullmatch(r"[a-fA-F0-9]{64}", config_app.security.token_key)
+        ):
+            raise credentials_exception
+
         access_key = config_app.security.token_key
         payload = jwt.decode(token, access_key, algorithms=[algorithm])
 
