@@ -5,8 +5,6 @@ from vui_common.security.helpers.limiter_request_config import LimiterRequestCon
 
 class SecurityConfig:
     def __init__(self):
-        # self.token_key = os.getenv("SECURITY_TOKEN_KEY", "")
-        # self.refresh_token_key = os.getenv("SECURITY_REFRESH_TOKEN_KEY", "")
         self.token_expiration = int(os.getenv('API_TOKEN_EXPIRATION_MIN', '30'))
         self.refresh_token_expiration = int(os.getenv('API_TOKEN_REFRESH_EXPIRATION_DAYS', '7'))
         self.disable_pwd_rate = int(os.getenv('SECURITY_DISABLE_USERS_PWD_RATE', '0'))
