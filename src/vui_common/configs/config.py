@@ -75,9 +75,11 @@ class ConfigHelper:
     #             GET ENVIRONMENT VARIABLES
     # ------------------------------------------------------------------------------------------------
 
-    @staticmethod
-    def get_env_variables():
-        data = dotenv_values(find_dotenv())
+    def get_env_variables(self):
+        if self.k8s.in_cluster_mode:
+            data = dotenv_values(find_dotenv())
+        else:
+            data = dict(os.environ)
         kv = {}
         for k, v in data.items():
             if (k in ['SECURITY_TOKEN_KEY',
