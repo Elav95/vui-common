@@ -1,14 +1,14 @@
 [project]
 name = "vui-common"
-version = "0.1.0"
+version = "0.1.3"
 description = "Shared base configuration, schemas, and common functions for Velero agent and Core"
 authors = [{ name = "Davide Serio", email = "davide@serio.dev" }]
 readme = "README.md"
 requires-python = ">=3.8"
 
 dependencies = [
-    "aiohappyeyeballs==2.4.4",
-    "aiohttp==3.11.14",
+    "aiohappyeyeballs==2.6.1",
+    "aiohttp==3.12.12",
     "aiosignal==1.3.2",
     "annotated-types==0.7.0",
     "anyio==4.8.0",
@@ -29,7 +29,7 @@ dependencies = [
     "frozenlist==1.5.0",
     "google-auth==2.38.0",
     "greenlet==3.1.1",
-    "h11==0.14.0",
+    "h11==0.16.0",
     "idna==3.10",
     "kubernetes==32.0.0",
     "kubernetes_asyncio==32.0.0",
