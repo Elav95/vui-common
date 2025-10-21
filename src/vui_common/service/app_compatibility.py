@@ -85,16 +85,25 @@ def _version_content(content, ui_version, api_version):
 def _retrieve_data_from_md_file(ui_version: str = None, api_version: str = None):
     logger.info(f"__retrieve_data_from_md_file")
     url = 'https://raw.githubusercontent.com/seriohub/velero-helm/main/components.txt'
-    response = requests.get(url)
+    local_file = "src/vui_common/data/components.txt"
 
-    if response.status_code == 200:
+    try:
+        response = requests.get(url, timeout=2)
+        response.raise_for_status()
         content = response.text
-        versions_ui, versions_api, msg_error = _version_content(content, ui_version, api_version)
-        return versions_ui, versions_api, msg_error
-    else:
-        message = "no data read from md file"
-        logger.info(f"__retrieve_data_from_md_file: {message}")
-        return None, None, message
+        logger.info("Data retrieved from internet")
+    except (requests.RequestException, requests.Timeout) as e:
+        logger.warning(f"Falling back to local file due to error: {e}")
+        if not os.path.exists(local_file):
+            message = "No internet access and local components.txt not found"
+            logger.error(message)
+            return None, None, message
+        with open(local_file, "r", encoding="utf-8") as f:
+            content = f.read()
+        logger.info("Data retrieved from local file")
+
+    versions_ui, versions_api, msg_error = _version_content(content, ui_version, api_version)
+    return versions_ui, versions_api, msg_error
 
 
 async def ui_compatibility_service(version: str):

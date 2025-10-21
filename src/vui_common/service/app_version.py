@@ -5,7 +5,9 @@ from vui_common.configs.config_proxy import config_app
 
 from datetime import datetime
 import re
-
+import os
+import json
+import requests
 from vui_common.models.db.project_versions import ProjectsVersion
 from vui_common.database.db_connection import SessionLocal
 from typing import Optional
@@ -80,30 +82,52 @@ async def _get_last_version(repo, owner="seriohub", check_last_release=False) ->
     # GitHub API URL for fetching all tags
     path = "tags"
     if check_last_release:
-        path = "releases/latest"
-    url = f"https://api.github.com/repos/{owner}/{repo}/{path}"
-
-    # Make the request
-    # response = requests.get(url)
-    response = await _do_api_call(url)
-    if response['status'] == 200:
-        try:
-            # data = await response.json()
-            data = response['data']
-            if check_last_release:
-                latest_tag = f"{data.get('tag_name')} published at {data.get('published_at')}"
-            else:
-                tags = data
-                tags.sort(key=lambda tag: _extract_version_numbers(tag["name"]), reverse=True)
-                latest_tag = tags[0]["name"]
-
-            logger.info(f"The latest tag for the repo {repo} is: {latest_tag}")
-            return latest_tag
-        except Exception as e:
-            logger.error(f"Error processing response for {repo}: {e}")
-            return "n.y.a."
+        path = "releases_latest"
+        api_path = "releases/latest"
     else:
-        logger.warning(f"Failed to fetch tags for repo {repo}. Status code: {str(response)}")
+        api_path = "tags"
+
+    url = f"https://api.github.com/repos/{owner}/{repo}/{api_path}"
+
+    local_dir = f"src/vui_common/data/components.txt/{owner}"
+    os.makedirs(local_dir, exist_ok=True)
+    local_file = os.path.join(local_dir, f"{repo}-{path}.json")
+
+    try:
+        response = await _do_api_call(url)
+        if response.get("status") != 200:
+            raise requests.RequestException(f"Status code {response.get('status')}")
+
+        data = response["data"]
+        logger.info(f"Data retrieved from GitHub API for {repo}")
+    except Exception as e:
+        try:
+            logger.warning(f"_do_api_call failed for {repo}: {e}. Trying direct request...")
+            r = requests.get(url, timeout=2)
+            r.raise_for_status()
+            data = r.json()
+            logger.info(f"Data retrieved from GitHub API (direct request) for {repo}")
+        except (requests.RequestException, requests.Timeout) as e2:
+            logger.warning(f"Falling back to local file for {repo} due to error: {e2}")
+            if not os.path.exists(local_file):
+                logger.error(f"No internet and local file not found: {local_file}")
+                return "n.y.a."
+            with open(local_file, "r", encoding="utf-8") as f:
+                data = json.load(f)
+            logger.info(f"Data retrieved from local file {local_file}")
+
+    try:
+        if check_last_release:
+            latest_tag = f"{data.get('tag_name')} published at {data.get('published_at')}"
+        else:
+            tags = data
+            tags.sort(key=lambda tag: _extract_version_numbers(tag["name"]), reverse=True)
+            latest_tag = tags[0]["name"]
+
+        logger.info(f"The latest tag for the repo {repo} is: {latest_tag}")
+        return latest_tag
+    except Exception as e:
+        logger.error(f"Error processing response for {repo}: {e}")
         return "n.y.a."
 
 
