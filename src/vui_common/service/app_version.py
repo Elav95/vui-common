@@ -82,14 +82,11 @@ async def _get_last_version(repo, owner="seriohub", check_last_release=False) ->
     # GitHub API URL for fetching all tags
     path = "tags"
     if check_last_release:
-        path = "releases_latest"
-        api_path = "releases/latest"
-    else:
-        api_path = "tags"
-
-    url = f"https://api.github.com/repos/{owner}/{repo}/{api_path}"
-
-    local_dir = f"src/vui_common/data/components.txt/{owner}"
+        path = "releases/latest"
+    url = f"https://api.github.com/repos/{owner}/{repo}/{path}"
+    
+    local_dir = f"src/vui_common/data/{owner}"
+    path = path.replace("/", "-")
     os.makedirs(local_dir, exist_ok=True)
     local_file = os.path.join(local_dir, f"{repo}-{path}.json")
 
@@ -101,21 +98,18 @@ async def _get_last_version(repo, owner="seriohub", check_last_release=False) ->
         data = response["data"]
         logger.info(f"Data retrieved from GitHub API for {repo}")
     except Exception as e:
+        logger.warning(f"_do_api_call failed for {repo}: {e}. Falling back to local file...")
+        if not os.path.exists(local_file):
+            logger.error(f"No internet and local file not found: {local_file}")
+            return "n.y.a."
         try:
-            logger.warning(f"_do_api_call failed for {repo}: {e}. Trying direct request...")
-            r = requests.get(url, timeout=2)
-            r.raise_for_status()
-            data = r.json()
-            logger.info(f"Data retrieved from GitHub API (direct request) for {repo}")
-        except (requests.RequestException, requests.Timeout) as e2:
-            logger.warning(f"Falling back to local file for {repo} due to error: {e2}")
-            if not os.path.exists(local_file):
-                logger.error(f"No internet and local file not found: {local_file}")
-                return "n.y.a."
             with open(local_file, "r", encoding="utf-8") as f:
                 data = json.load(f)
             logger.info(f"Data retrieved from local file {local_file}")
 
+        except Exception as e2:
+            logger.error(f"Error reading local file {local_file}: {e2}")
+            return "n.y.a."
     try:
         if check_last_release:
             latest_tag = f"{data.get('tag_name')} published at {data.get('published_at')}"
