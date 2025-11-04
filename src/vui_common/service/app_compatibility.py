@@ -85,7 +85,7 @@ def _version_content(content, ui_version, api_version):
 def _retrieve_data_from_md_file(ui_version: str = None, api_version: str = None):
     logger.info(f"__retrieve_data_from_md_file")
     url = 'https://raw.githubusercontent.com/seriohub/velero-helm/main/components.txt'
-    local_file = "src/vui_common/data/components.txt"
+    local_file = "/app/data//components.txt"
 
     try:
         response = requests.get(url, timeout=2)

@@ -85,7 +85,7 @@ async def _get_last_version(repo, owner="seriohub", check_last_release=False) ->
         path = "releases/latest"
     url = f"https://api.github.com/repos/{owner}/{repo}/{path}"
     
-    local_dir = f"src/vui_common/data/{owner}"
+    local_dir = f"/app/data//{owner}"
     path = path.replace("/", "-")
     os.makedirs(local_dir, exist_ok=True)
     local_file = os.path.join(local_dir, f"{repo}-{path}.json")
